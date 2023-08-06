@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     'letter.apps.LetterConfig',
     'crispy_forms',
     'crispy_bootstrap5',
+
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
