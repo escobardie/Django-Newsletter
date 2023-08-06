@@ -17,8 +17,10 @@
                         {% csrf_token %}
                         
                         {{ form|crispy }}
-                        <!--
-                        {{ form.as_p }}-->
+                        
+                        
+                        {{form.media}}
+                    
                         <input class="btn btn-info btn-block" type="submit" value="Send Message">
                     </form>
                 </div>
