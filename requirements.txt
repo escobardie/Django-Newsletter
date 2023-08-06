@@ -1,0 +1,32 @@
+asgiref==3.7.2
+Django==4.2.2
+django-ckeditor==6.6.1
+django-js-asset==2.1.0
+mysqlclient==2.2.0
+Pillow==10.0.0
+python-decouple==3.8
+sqlparse==0.4.4
+typing_extensions==4.6.3
+tzdata==2023.3
+
+django-crispy-forms==2.0
+django-pandas==0.6.6
+# bootstrap4==0.1.0
+django-bootstrap-v5==1.0.11
+crispy-bootstrap5==0.7
+
+# https://stackoverflow.com/questions/65238459/templatedoesnotexist-at-users-register-bootstrap5-uni-form-html
+# $ pip install django-crispy-forms
+
+# $ pip install crispy-bootstrap5
+# And in settings.py
+
+# INSTALLED_APPS = [
+#  ...,
+# 'crispy_forms',
+# 'crispy_bootstrap5',  # Forgetting this was probably your error
+#  ]
+# And then at the bottom of the page of settings.py
+
+# CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+# CRISPY_TEMPLATE_PACK = "bootstrap5"
