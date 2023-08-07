@@ -11,10 +11,21 @@ from django_pandas.io import read_frame
 def index(request):
     if request.method == 'POST':
         form = SubscibersForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Suscripción exitosa')
+        print(request.POST['email']) # obtego el correo enviado par
+        email_validator= request.POST['email']
+        emails = Subscribers.objects.filter(email=email_validator)
+        print(emails)
+        if emails:
+            print("Email ya Suscripto")
+            messages.success(request, 'Email ya Suscripto')
             return redirect('/')
+        
+        else:
+            print("Email cargado")
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Suscripción exitosa')
+                return redirect('/')
     else:
         form = SubscibersForm()
     context = {
@@ -37,11 +48,12 @@ def mail_letter(request):
             title = form.cleaned_data.get('title')
             message = form.cleaned_data.get('message')
             send_mail(
-                title,
-                message,
-                '',
-                mail_list,
+                title, # (subject)
+                '', # message, # ORIGINAL (message)
+                'PRUEBA DESDE WEB', # (from_email)
+                mail_list, # (recipient_list)
                 fail_silently=False,
+                html_message=message,
             )
             messages.success(request, 'El mensaje ha sido enviado a la lista de correo')
             return redirect('mail-letter')
