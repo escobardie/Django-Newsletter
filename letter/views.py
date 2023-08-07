@@ -13,7 +13,7 @@ def index(request):
         form = SubscibersForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Subscription Successful')
+            messages.success(request, 'Suscripción exitosa')
             return redirect('/')
     else:
         form = SubscibersForm()
@@ -24,7 +24,9 @@ def index(request):
 
 
 def mail_letter(request):
-    emails = Subscribers.objects.all()
+    # OBTENEMOS TODOS LOS CORREO QUE ESTEN ACTIVOS
+    emails = Subscribers.objects.filter(activo=True)
+    # emails = Subscribers.objects.all() # original TRAE TODOS LOS CORREOS
     df = read_frame(emails, fieldnames=['email'])
     mail_list = df['email'].values.tolist()
     print(mail_list)
@@ -41,7 +43,7 @@ def mail_letter(request):
                 mail_list,
                 fail_silently=False,
             )
-            messages.success(request, 'Message has been sent to the Mail List')
+            messages.success(request, 'El mensaje ha sido enviado a la lista de correo')
             return redirect('mail-letter')
     else:
         form = MailMessageForm()

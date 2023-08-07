@@ -13,13 +13,18 @@
             {% endfor %}
             <div class="card">
                 <div class="card-body">
-                    <form method="POST" >
+                    <!--<form method="POST" > -->
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        {{ form.media }}
-                        {{ form.as_p }}
+
+                        {{ form|crispy }}
+                        
+                        
 <!--
                         {{ form|crispy }}
-                        {{form.media}}
+                        {{ form|safe }}
+                        {{ form.media }}
+                        {{ form.as_p }}
 -->              
                         <input class="btn btn-info btn-block" type="submit" value="Send Message">
                     </form>
