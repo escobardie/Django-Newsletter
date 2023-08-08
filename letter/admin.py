@@ -15,7 +15,7 @@ admin.site.site_title = 'Mensajes'
 
 class SubscribersAdmin(admin.ModelAdmin):
     readonly_fields = ('email', 'date')
-    list_display = ('email', 'activo', 'date')
+    list_display = ('id','email', 'activo', 'date')
 
 admin.site.register(Subscribers, SubscribersAdmin)
 
@@ -26,7 +26,7 @@ admin.site.register(Subscribers, SubscribersAdmin)
 
 class MailMessageAdmin(admin.ModelAdmin):
     readonly_fields = ('creacion',)
-    list_display = ('title', 'message', 'creacion')
+    list_display = ('title', 'creacion','id')
 
 admin.site.register(MailMessage, MailMessageAdmin)
 

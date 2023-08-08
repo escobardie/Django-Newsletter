@@ -11,7 +11,7 @@ class Subscribers(models.Model):
     class Meta:
         verbose_name='Suscripción'
         verbose_name_plural='Suscripciones'
-        ordering = ['email']
+        ordering = ['-id']
 
     def __str__(self):
         return self.email
@@ -26,7 +26,7 @@ class MailMessage(models.Model):
     class Meta:
         verbose_name='Mensaje'
         verbose_name_plural='Mensajes'
-        ordering = ['title']
+        ordering = ['-id']
 
     def __str__(self):
         return self.title

@@ -1,5 +1,5 @@
 {% extends 'partials/base.html' %}
-{% block title %}Home Page {% endblock %}
+{% block title %}Pagina Boletines{% endblock %}
 
 {% load crispy_forms_tags %}
 
@@ -14,7 +14,7 @@
             {% endfor %}
             <div class="card">
                 <div class="card-body">
-                    <h3>Subscribe to Newsletter</h3>
+                    <h3>Subscribe a los Boletines</h3>
                     <hr>
                     <form method="POST">
                         {% csrf_token %}
