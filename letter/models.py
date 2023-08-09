@@ -20,7 +20,7 @@ class Subscribers(models.Model):
 class MailMessage(models.Model):
     title = models.CharField(max_length=100, null=True)
     # message = models.TextField(null=True) # ORIGINAL
-    message = RichTextField(null=True, verbose_name='message')
+    message = RichTextField(null=True, verbose_name='Mensaje')
     creacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de creación')
 
     class Meta:
