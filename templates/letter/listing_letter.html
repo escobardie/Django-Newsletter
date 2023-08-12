@@ -7,14 +7,29 @@
     <div class="row mt-5 pt-5">
         <div class="col-md-6 offset-md-3">
             <div class="card">
+                <table>
+                    <tr>
+                        <th style="background-color: grey">Boletines</th>
+                        <th style="background-color: grey">Fecha</th>
+                    </tr>
+                    {% for boletin in lista_boletines %}
+                        <tr>
+                            <td>
+                                <a href={% url 'detail_boletin' id=boletin.id %}>{{ boletin.title }}</a>
+                            </td>
+                            <td>{{ boletin.creacion|time:"H:i" }} - {{ boletin.creacion|date:"SHORT_DATE_FORMAT" }} </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            <!---
                 <div class="card-body">
                     {% for boletin in lista_boletines %}
                         <li>
                             <a href={% url 'detail_boletin' id=boletin.id %}>{{ boletin.title }}</a> {{ boletin.creacion}}
                         </li>
-                        
                     {% endfor %}
                 </div>
+            -->
             </div>
         </div>
     </div>

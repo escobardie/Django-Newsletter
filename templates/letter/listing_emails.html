@@ -1,0 +1,50 @@
+{% extends 'partials/base.html' %}
+{% block title %}Pagina Emails{% endblock %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <div class="row mt-5 pt-5">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <table>
+                    <tr>
+                        <th style="background-color: grey">Suscriptores</th>
+                        <th style="background-color: grey">Fecha</th>
+                    </tr>
+                    {% for email in lista_emails %}
+                        <tr>
+                            <td>{{ email.email }}</td>
+                            <td>{{ email.date|date:'d M Y' }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+<!--
+                <div class="card-body">
+                    <table>
+                        <tr>
+                          <th>Suscriptores</th>
+                          <th>Fecha</th>
+                        </tr>
+                        {% for email in lista_emails %}
+                            <tr>
+                                <td>{{ email.email }}</td>
+                                <td>{{ email.date }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    
+                    {% for email in lista_emails %}
+                        <li>
+                            <a>{{ email.email }}</a> {{ email.date}}
+                        </li>
+                        
+                    {% endfor %}
+
+                </div>
+-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -123,3 +123,10 @@ class NewslatterUpdateView(UpdateView):
         # Genera la URL para la vista 'articulo' usando el slug actualizado del artículo
         return reverse('detail_boletin', kwargs={'id': boletin.id})
 
+################# PAGE LISTING EMAILS #################
+class ListEmailsView(ListView):
+    model: Subscribers
+    template_name = 'letter/listing_emails.html' # HTML DONDE SE VERA LA LISTA DE EMALIS
+    context_object_name = 'lista_emails' # VARIABLE PARA LA LISTA DE EMAILS
+    # paginate_by = 3
+    queryset = Subscribers.objects.all() # OBTENEMOS TODOS LOS EMAILS

@@ -11,4 +11,5 @@ urlpatterns = [
     # path('reenvio_boletin/<int:id>/',views.NewslatterUpdateView.as_view(), name='reenvio_boletin'),
     path('reenvio_boletin/<int:id>/',views.NewslatterUpdateView.as_view(), name='reenvio_boletin'),
 
+    path('listing_emails/', views.ListEmailsView.as_view(), name='lista_emails'),
 ]

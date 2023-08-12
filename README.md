@@ -9,8 +9,8 @@
 1. Clone
     CLONAR REPO
 
-1. Create and activate a virtual environment:
-Crear y activar un entorno virtual:
+1. Create virtual environment:
+Crear entorno virtual:
 
     ```sh
     $ virtualenv venv
@@ -54,3 +54,12 @@ Entramos en:
     ```sh
     http://127.0.0.1:8000/ 
     ```
+
+
+## BIBLIOTECA
+Se utilizo informacionde las siguientes paginas
+
+| BIBLIOTECA | LINK |
+| ------ | ------ |
+| TIME DATE | [https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date][PlDb] |
+| README | [https://dillinger.io/][PlGh] |
