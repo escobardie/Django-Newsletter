@@ -61,5 +61,5 @@ Se utilizo informacionde las siguientes paginas
 
 | BIBLIOTECA | LINK |
 | ------ | ------ |
-| TIME DATE | [https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date][PlDb] |
-| README | [https://dillinger.io/][PlGh] |
+| TIME DATE | https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date |
+| README | https://dillinger.io/ |
