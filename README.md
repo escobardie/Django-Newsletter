@@ -6,47 +6,47 @@
 ## Want to use this project?
 ## ¿Quieres usar este proyecto?
 
-1. Clone
-    #   CLONAR REPO
+#   1. Clone
+##  CLONAR REPO
 
-1. Create and activate a virtual environment:
-    #   Crear y activar un entorno virtual:
+#   1. Create and activate a virtual environment:
+##  Crear y activar un entorno virtual:
 
     ```sh
     $ virtualenv venv
     ```
 
-1. Activar entorno:
-    # 
+#   1. Activate the environment:
+##  Activar entorno
     ```sh
     $ .\venv\Scripts\activate  
     ```
 
-1. Install the requirements:
-    #   Instalar los requisitos:
+#   1. Install the requirements:
+##  Instalar los requisitos:
 
     ```sh
     (venv)$ pip install -r requirements.txt
     ```
 
-1. Create the migrations:
-    #   Crear las migraciones:
+#   1. Create the migrations:
+##  Crear las migraciones:
 
     ```sh
     (venv)$ python manage.py makemigrations
     ```
 
 
-1. Apply the migrations:
-    #   Aplicar las migraciones:
+#   1. Apply the migrations:
+##  Aplicar las migraciones:
 
     ```sh
     (venv)$ python manage.py migrate
     ```
 
 
-1. Run the server:
-    #   Ejecute el servidor:
+#   1. Run the server:
+##  Ejecute el servidor:
 
     ```sh
     (venv)$ python manage.py runserver
