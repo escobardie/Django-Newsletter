@@ -8,16 +8,39 @@ from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 
+
 # Create your views here.
 
+####################### DEF TO CLASS #######################
+class SubcriptioView(CreateView):
+    model = Subscribers
+    template_name = 'letter/inicio.html'
+    form_class = SubscibersForm
+    success_url = reverse_lazy('suscripcion')
 
+    def form_valid(self, form):
+        email_validator = self.request.POST['email'] # OBTENEMOS EL EMAIL PURO DEL FORMULARIO
+        #print(email_validator)
+        emails = Subscribers.objects.filter(email=email_validator) # FILTRAMOS SI YA EXISTE EL EMAIL DENTRO DE LA BD
+        #print(emails)
+
+        if emails:
+            print("Email ya Suscripto")
+            messages.success(self.request, 'Email ya Suscripto') # CREAMOS EL MSJ
+            return redirect('suscripcion') # LO REDIRECIONAMOS NUEVAMENTE A LA PAGINA
+        else:
+            messages.success(self.request, 'Suscripción exitosa')
+            return super().form_valid(form)
+
+####################### DEF TO CLASS #######################
 def index(request):
     if request.method == 'POST':
         form = SubscibersForm(request.POST)
-        # print(request.POST['email']) # obtego el correo enviado par
+        print(request.POST['email']) # obtego el correo enviado par
         email_validator= request.POST['email']
         emails = Subscribers.objects.filter(email=email_validator)
         # print(emails)
+        
         if emails:
             print("Email ya Suscripto")
             messages.success(request, 'Email ya Suscripto')

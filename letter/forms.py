@@ -6,6 +6,11 @@ class SubscibersForm(forms.ModelForm):
     class Meta:
         model = Subscribers
         fields = ['email', ]
+    
+    email = forms.EmailField(widget=forms.EmailInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Email',
+    }))
 
 
 class MailMessageForm(forms.ModelForm):

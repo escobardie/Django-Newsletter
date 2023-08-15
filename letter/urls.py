@@ -12,4 +12,8 @@ urlpatterns = [
     path('reenvio_boletin/<int:id>/',views.NewslatterUpdateView.as_view(), name='reenvio_boletin'),
 
     path('listing_emails/', views.ListEmailsView.as_view(), name='lista_emails'),
+    
+    ####################### DEF TO CLASS #######################
+    path('inicio/', views.SubcriptioView.as_view(), name='suscripcion'),
+    ####################### DEF TO CLASS #######################
 ]
