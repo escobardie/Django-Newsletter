@@ -34,7 +34,7 @@ class SubcriptioView(CreateView):
     
 class CreateLetterView(CreateView):
     model = MailMessage
-    template_name = 'letter/mail_letter.html'
+    template_name = 'letter/create_letter.html'
     form_class = MailMessageForm
     success_url = reverse_lazy('create_letter')
 
