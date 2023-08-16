@@ -31,8 +31,35 @@ class SubcriptioView(CreateView):
         else:
             messages.success(self.request, 'Suscripción exitosa')
             return super().form_valid(form)
+    
+class CreateLetterView(CreateView):
+    model = MailMessage
+    template_name = 'letter/mail_letter.html'
+    form_class = MailMessageForm
+    success_url = reverse_lazy('create_letter')
+
+    def form_valid(self, form):
+        # OBTENEMOS TODOS LOS CORREO QUE ESTEN ACTIVOS
+        emails = Subscribers.objects.filter(activo=True)
+        df = read_frame(emails, fieldnames=['email'])
+        mail_list = df['email'].values.tolist() # OBTENEMOS LA LISTA DE CORREOS
+        form.save() # GUARDAMOS EL FORMULARIO
+        title = form.cleaned_data.get('title')
+        message = form.cleaned_data.get('message')
+        send_mail(
+            title, # (subject)
+            '', # message, # ORIGINAL (message)
+            'PRUEBA DESDE CLASS', # (from_email)
+            mail_list, # (recipient_list)
+            fail_silently=False,
+            html_message=message, # AQUI EL MESAJE SE CONVIERTE EN HTML
+        )
+        messages.success(self.request, 'El mensaje ha sido enviado a la lista de correo')
+        return redirect('create_letter')
 
 ####################### DEF TO CLASS #######################
+
+############### DEF QUE NO SE USARAN PERO QUEDARA COMO GUIA ###############
 def index(request):
     if request.method == 'POST':
         form = SubscibersForm(request.POST)
@@ -59,15 +86,15 @@ def index(request):
     }
     return render(request, 'letter/index.html', context)
 
-
 def mail_letter(request):
     print(request)
     # OBTENEMOS TODOS LOS CORREO QUE ESTEN ACTIVOS
     emails = Subscribers.objects.filter(activo=True)
     # emails = Subscribers.objects.all() # original TRAE TODOS LOS CORREOS
     df = read_frame(emails, fieldnames=['email'])
+    #print(df)
     mail_list = df['email'].values.tolist()
-    # print(mail_list)
+    #print(mail_list)
     if request.method == 'POST':
         form = MailMessageForm(request.POST)
         if form.is_valid():
@@ -90,7 +117,7 @@ def mail_letter(request):
         'form': form,
     }
     return render(request, 'letter/mail_letter.html', context)
-
+############### DEF QUE NO SE USARAN PERO QUEDARA COMO GUIA ###############
 
 ################# PAGINA LISTADO DE EMAILS EN HTML #################
 class ListNewslatterView(ListView):
@@ -105,7 +132,6 @@ class NewslatterDetailView(DetailView):
     template_name = 'letter/detail_boletin.html'
     context_object_name = 'boletin'
     pk_url_kwarg = 'id'
-
 
 class NewslatterUpdateView(UpdateView):
     model = MailMessage
