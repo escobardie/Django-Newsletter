@@ -17,4 +17,9 @@ urlpatterns = [
     path('inicio/', views.SubcriptioView.as_view(), name='suscripcion'), # SUSCRIPCION BASADA EN CLASES
     path('create_letter/', views.CreateLetterView.as_view(), name='create_letter'), # CREACION DE BOLETIN BASADA EN CLASES
     ################# DEF TO CLASS #################
+
+    #####################################
+    path('activate/<uidb64>/<token>', views.activate, name='activate'),
+    path("activado/", views.ActivateView.as_view(), name="sub_activado")
+    #####################################
 ]

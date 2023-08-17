@@ -63,3 +63,5 @@ Se utilizo informacionde las siguientes paginas
 | ------ | ------ |
 | TIME DATE | https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date |
 | README | https://dillinger.io/ |
+| Authentication | https://youtu.be/wB1qOExDsYY |
+

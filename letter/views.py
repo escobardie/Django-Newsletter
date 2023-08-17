@@ -9,8 +9,72 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 
 
-# Create your views here.
+from typing import Protocol
+from django.contrib.auth import get_user_model
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import EmailMessage
+from .tokens import account_activation_token
 
+# Create your views here.
+#####################################
+def activate(request, uidb64, token):
+    # POR LAGUNA RAZON ENTRA DOS VECES CUANDO ACCEDEMOS DESDE EL LINK DEL CORREO
+    # ESTA PRIMERA VEZ ENTRA SIN POROBLEMA, MOSTRARIA EL MENSAJE DEL IF PERO..
+    # EN LA SEGUNDA BORRA O PISA EL MSJ DEL PRIMER HTML.
+    # NO SE DE DONDE VIENE EL ERROR
+    
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = Subscribers.objects.get(pk=uid)
+    except:
+        user = None
+        print('ENTRO DESDE EXCEPTION')
+
+    if user is not None and account_activation_token.check_token(user, token):
+        print("USUARIO:",user)
+        print('ENTRO POR ACA DESDE DEF ACTIVATE')
+        user.activo = True
+        print(user.activo)
+        user.save() # ORIGINAL LUGAR
+
+        messages.success(request, "que ?Gracias por su confirmación por correo electrónico. Ahora puede iniciar sesión en su cuenta.")
+        # user.save()
+        print("LLEGO HASTA AQUI")
+        # return redirect('sub_activado')
+    # else:
+    #     print("soy el otro USUARIO:",user)
+    #     print('Y AHORA ENTRO POR ACA DESDE DEF ACTIVATE')
+    #     messages.error(request, "¡El enlace de activación no es válido!")
+    #     return redirect('sub_activado')
+    
+    print('Y POR ACA NO?')
+    messages.success(request, "Gracias por su confirmación por correo electrónico. Ahora podra recibir los boletines.")
+    return redirect('sub_activado')
+
+def activateEmail(request, user, to_email):
+    mail_subject = "Activa tu cuenta de usuario."
+    message = render_to_string("template_activate_account.html", {
+        'user': user.id,
+        'domain': get_current_site(request).domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+        "protocol": 'https' if request.is_secure() else 'http'
+    })
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    if email.send():
+        messages.success(request, f'Estimado {user}, vaya a la bandeja de entrada de su correo electrónico {to_email} y haga clic en \
+                recibido el enlace de activación para confirmar y completar el registro. Nota: Revisa tu carpeta de correo no deseado.')
+    else:
+        messages.error(request, f'Problema al enviar correo electrónico a {to_email}, verifica si lo escribiste correctamente.')
+
+class ActivateView(TemplateView):
+    template_name = "activado.html"
+
+
+#####################################
 ####################### DEF TO CLASS #######################
 class SubcriptioView(CreateView):
     model = Subscribers
@@ -30,6 +94,17 @@ class SubcriptioView(CreateView):
             return redirect('suscripcion') # LO REDIRECIONAMOS NUEVAMENTE A LA PAGINA
         else:
             messages.success(self.request, 'Suscripción exitosa')
+            #####################################
+            user = form.save()
+            user.activo=False
+            print(form.cleaned_data.get('email'))
+            print()
+            print(user.id)
+            print(get_current_site(self.request).domain)
+            print(urlsafe_base64_encode(force_bytes(user.pk)))
+            print(account_activation_token.make_token(user))
+            activateEmail(self.request, user, form.cleaned_data.get('email'))
+            #####################################
             return super().form_valid(form)
     
 class CreateLetterView(CreateView):
@@ -178,4 +253,4 @@ class ListEmailsView(ListView):
     template_name = 'letter/listing_emails.html' # HTML DONDE SE VERA LA LISTA DE EMALIS
     context_object_name = 'lista_emails' # VARIABLE PARA LA LISTA DE EMAILS
     # paginate_by = 3
-    queryset = Subscribers.objects.all() # OBTENEMOS TODOS LOS EMAILS
+    queryset = Subscribers.objects.filter(activo=True) # OBTENEMOS TODOS LOS EMAILS

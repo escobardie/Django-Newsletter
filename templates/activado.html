@@ -1,0 +1,18 @@
+{% extends 'partials/base.html' %}
+{% block title %}Pagina Activado{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-5 pt-5">
+        <div class="col-md-4 offset-md-4">
+            {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
