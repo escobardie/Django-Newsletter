@@ -4,6 +4,8 @@ from django.conf import settings
 from django.utils.crypto import constant_time_compare, salted_hmac
 from django.utils.http import base36_to_int, int_to_base36
 
+import six
+
 
 class PasswordResetTokenGenerator:
     """
@@ -65,15 +67,15 @@ class PasswordResetTokenGenerator:
         except ValueError:
             return False
 
-        # # Check that the timestamp/uid has not been tampered with
-        # for secret in [self.secret, *self.secret_fallbacks]:
-        #     if constant_time_compare(
-        #         self._make_token_with_timestamp(user, ts, secret),
-        #         token,
-        #     ):
-        #         break
-        # else:
-        #     return False
+        # Check that the timestamp/uid has not been tampered with
+        for secret in [self.secret, *self.secret_fallbacks]:
+            if constant_time_compare(
+                self._make_token_with_timestamp(user, ts, secret),
+                token,
+            ):
+                break
+        else:
+            return False
 
         # Check the timestamp is within limit.
         if (self._num_seconds(self._now()) - ts) > settings.PASSWORD_RESET_TIMEOUT:
@@ -95,31 +97,10 @@ class PasswordResetTokenGenerator:
         ]  # Limit to shorten the URL.
         return "%s-%s" % (ts_b36, hash_string)
 
-    def _make_hash_value(self, user, timestamp):
-        """
-        Hash the user's primary key, email (if available), and some user state
-        that's sure to change after a password reset to produce a token that is
-        invalidated when it's used:
-        1. The password field will change upon a password reset (even if the
-           same password is chosen, due to password salting).
-        2. The last_login field will usually be updated very shortly after
-           a password reset.
-        Failing those things, settings.PASSWORD_RESET_TIMEOUT eventually
-        invalidates the token.
-
-        Running this data through salted_hmac() prevents password cracking
-        attempts using the reset token, provided the secret isn't compromised.
-        """
-        # Truncate microseconds so that tokens are consistent even if the
-        # database doesn't support microseconds.
-        login_timestamp = (
-            ""
-            if user.last_login is None
-            else user.last_login.replace(microsecond=0, tzinfo=None)
+    def _make_hash_value(self, user, timestamp): # REDEFINIDO DESDE OTRO CODIGO
+        return (
+            six.text_type(user.pk) + six.text_type(timestamp)  + six.text_type(user.activo)
         )
-        email_field = user.get_email_field_name()
-        email = getattr(user, email_field, "") or ""
-        return f"{user.pk}{login_timestamp}{timestamp}{email}"
 
     def _num_seconds(self, dt):
         return int((dt - datetime(2001, 1, 1)).total_seconds())
