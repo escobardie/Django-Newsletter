@@ -19,7 +19,8 @@ urlpatterns = [
     ################# DEF TO CLASS #################
 
     #####################################
-    path('activate/<uidb64>/<token>', views.activate, name='activate'),
-    path("activado/", views.ActivateView.as_view(), name="sub_activado")
+    # path('activate/<uidb64>/<token>', views.activate, name='activate'),
+    path("activado/", views.ActivateView.as_view(), name="sub_activado"),
     #####################################
+    path('activate/<str:uidb64>/<str:token>/', views.ConfirmationView.as_view(), name='activate'),
 ]

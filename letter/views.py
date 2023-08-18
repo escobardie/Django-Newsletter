@@ -4,7 +4,7 @@ from . models import Subscribers, MailMessage
 from django.contrib import messages
 from django.core.mail import send_mail
 from django_pandas.io import read_frame
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 
@@ -18,41 +18,80 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
 
+#from django.contrib.auth.tokens import default_token_generator
+from .tokens_2 import default_token_generator
+
 # Create your views here.
+
+class ConfirmationView(View):
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = Subscribers.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError,Subscribers.DoesNotExist):
+            # Manejar enlace inválido o usuario no encontrado
+            messages.error(request, "El enlace de confirmación es inválido.")
+            print("ENTRO POR ACA 1")
+            return redirect('sub_activado')  # Redirigir a la página de inicio de sesión o donde desees
+
+        # if account_activation_token.check_token(user, token): #ORIGINAL
+        if default_token_generator.check_token(user, token):
+            # print("1",account_activation_token.check_token(user, token))
+            # Si el token es válido, confirmar al usuario y activar su cuenta
+            user.activo = True
+            user.save()
+            print("ENTRO POR ACA 2")
+            # messages.success(request, "¡Tu cuenta ha sido activada! Ahora puedes recibir boletines.")
+        else:
+            # print("2",account_activation_token.check_token(user, token))
+            # Manejar token inválido
+            print("ENTRO POR ACA 3")
+            messages.error(request, "El enlace de confirmación es inválido.")
+        #print("3",account_activation_token.check_token(user, token))
+        #print("ENTRO POR ACA 4")
+        messages.success(request, "¡Tu cuenta ha sido activada! Ahora puedes recibir boletines.")
+        return redirect('sub_activado')  # Redirigir a la página de inicio de sesión o donde desees
+
+
+
+
+
+
+
 #####################################
-def activate(request, uidb64, token):
-    # POR LAGUNA RAZON ENTRA DOS VECES CUANDO ACCEDEMOS DESDE EL LINK DEL CORREO
-    # ESTA PRIMERA VEZ ENTRA SIN POROBLEMA, MOSTRARIA EL MENSAJE DEL IF PERO..
-    # EN LA SEGUNDA BORRA O PISA EL MSJ DEL PRIMER HTML.
-    # NO SE DE DONDE VIENE EL ERROR
+# def activate(request, uidb64, token):
+#     # POR LAGUNA RAZON ENTRA DOS VECES CUANDO ACCEDEMOS DESDE EL LINK DEL CORREO
+#     # ESTA PRIMERA VEZ ENTRA SIN POROBLEMA, MOSTRARIA EL MENSAJE DEL IF PERO..
+#     # EN LA SEGUNDA BORRA O PISA EL MSJ DEL PRIMER HTML.
+#     # NO SE DE DONDE VIENE EL ERROR
     
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = Subscribers.objects.get(pk=uid)
-    except:
-        user = None
-        print('ENTRO DESDE EXCEPTION')
+#     try:
+#         uid = force_str(urlsafe_base64_decode(uidb64))
+#         user = Subscribers.objects.get(pk=uid)
+#     except:
+#         user = None
+#         print('ENTRO DESDE EXCEPTION')
 
-    if user is not None and account_activation_token.check_token(user, token):
-        print("USUARIO:",user)
-        print('ENTRO POR ACA DESDE DEF ACTIVATE')
-        user.activo = True
-        print(user.activo)
-        user.save() # ORIGINAL LUGAR
+#     if user is not None and account_activation_token.check_token(user, token):
+#         print("USUARIO:",user)
+#         print('ENTRO POR ACA DESDE DEF ACTIVATE')
+#         user.activo = True
+#         print(user.activo)
+#         user.save() # ORIGINAL LUGAR
 
-        messages.success(request, "que ?Gracias por su confirmación por correo electrónico. Ahora puede iniciar sesión en su cuenta.")
-        # user.save()
-        print("LLEGO HASTA AQUI")
-        # return redirect('sub_activado')
-    # else:
-    #     print("soy el otro USUARIO:",user)
-    #     print('Y AHORA ENTRO POR ACA DESDE DEF ACTIVATE')
-    #     messages.error(request, "¡El enlace de activación no es válido!")
-    #     return redirect('sub_activado')
+#         messages.success(request, "que ?Gracias por su confirmación por correo electrónico. Ahora puede iniciar sesión en su cuenta.")
+#         # user.save()
+#         print("LLEGO HASTA AQUI")
+#         # return redirect('sub_activado')
+#     # else:
+#     #     print("soy el otro USUARIO:",user)
+#     #     print('Y AHORA ENTRO POR ACA DESDE DEF ACTIVATE')
+#     #     messages.error(request, "¡El enlace de activación no es válido!")
+#     #     return redirect('sub_activado')
     
-    print('Y POR ACA NO?')
-    messages.success(request, "Gracias por su confirmación por correo electrónico. Ahora podra recibir los boletines.")
-    return redirect('sub_activado')
+#     print('Y POR ACA NO?')
+#     messages.success(request, "Gracias por su confirmación por correo electrónico. Ahora podra recibir los boletines.")
+#     return redirect('sub_activado')
 
 def activateEmail(request, user, to_email):
     mail_subject = "Activa tu cuenta de usuario."
@@ -64,9 +103,24 @@ def activateEmail(request, user, to_email):
         "protocol": 'https' if request.is_secure() else 'http'
     })
     email = EmailMessage(mail_subject, message, to=[to_email])
-    if email.send():
-        messages.success(request, f'Estimado {user}, vaya a la bandeja de entrada de su correo electrónico {to_email} y haga clic en \
-                recibido el enlace de activación para confirmar y completar el registro. Nota: Revisa tu carpeta de correo no deseado.')
+    email_list =(to_email,)
+    
+    ####################################
+    if send_mail(
+            mail_subject, # (subject)
+            '', # message, # ORIGINAL (message)
+            'PRUEBA DESDE ACTIVACIONEMAIL', # (from_email)
+            email_list, # (recipient_list)
+            fail_silently=False,
+            html_message=message, # AQUI EL MESAJE SE CONVIERTE EN HTML
+        ):
+        print('ENVIADO')
+        messages.success(request, f'Estimado {user}, VERIFIQUE SU BANDEJA DE CORREO.')
+    
+    ####################################
+    # if email.send():
+    #     messages.success(request, f'Estimado {user}, vaya a la bandeja de entrada de su correo electrónico {to_email} y haga clic en \
+    #             recibido el enlace de activación para confirmar y completar el registro. Nota: Revisa tu carpeta de correo no deseado.')
     else:
         messages.error(request, f'Problema al enviar correo electrónico a {to_email}, verifica si lo escribiste correctamente.')
 
@@ -93,16 +147,16 @@ class SubcriptioView(CreateView):
             messages.success(self.request, 'Email ya Suscripto') # CREAMOS EL MSJ
             return redirect('suscripcion') # LO REDIRECIONAMOS NUEVAMENTE A LA PAGINA
         else:
-            messages.success(self.request, 'Suscripción exitosa')
+            # messages.success(self.request, 'Suscripción exitosa')
             #####################################
             user = form.save()
             user.activo=False
-            print(form.cleaned_data.get('email'))
+            print('EMAIL: ',form.cleaned_data.get('email'))
             print()
-            print(user.id)
-            print(get_current_site(self.request).domain)
-            print(urlsafe_base64_encode(force_bytes(user.pk)))
-            print(account_activation_token.make_token(user))
+            print('ID: ',user.id)
+            print('DOMINIO: ',get_current_site(self.request).domain)
+            print('UID-PK: ',urlsafe_base64_encode(force_bytes(user.pk)))
+            print('TOKEN: ',account_activation_token.make_token(user))
             activateEmail(self.request, user, form.cleaned_data.get('email'))
             #####################################
             return super().form_valid(form)
@@ -152,7 +206,7 @@ def index(request):
             # print("Email cargado")
             if form.is_valid():
                 form.save()
-                messages.success(request, 'Suscripción exitosa')
+                # messages.success(request, 'Suscripción exitosa')
                 return redirect('/')
     else:
         form = SubscibersForm()

@@ -1,12 +1,15 @@
 from django.db import models
 from ckeditor.fields import RichTextField
+
 # Create your models here.
 
 
 class Subscribers(models.Model):
     email = models.EmailField(null=True)
     activo = models.BooleanField(default=True, verbose_name='Activo')
+    last_login = models.DateTimeField(auto_now_add=True)
     date = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de suscripción')
+    
 
     class Meta:
         verbose_name='Suscripción'
@@ -15,6 +18,14 @@ class Subscribers(models.Model):
 
     def __str__(self):
         return self.email
+    
+    def get_email_field_name(cls):
+        try:
+            return cls.EMAIL_FIELD
+        except AttributeError:
+            return "email"
+        
+
 
 
 class MailMessage(models.Model):

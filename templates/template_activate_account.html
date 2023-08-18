@@ -1,7 +1,7 @@
 {% autoescape off %}
-Hola Usuario,
+<h1>Hola Usuario,</h1>
 
-Haga clic en el siguiente enlace para confirmar su registro:
+<h2>Haga clic en el siguiente enlace para confirmar su registro:</h2>
+<a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}"> click para activar tu cuenta</a>
 
-{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
 {% endautoescape %}
