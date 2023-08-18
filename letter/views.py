@@ -20,7 +20,7 @@ from .tokens_2 import default_token_generator
 
 def activateEmail(request, user, to_email):
     mail_subject = "Link de activacion de boletines."
-    message = render_to_string("template_activate_account.html", {
+    message = render_to_string("activation_subs/template_activate_account.html", {
         #'user': user.id,
         'domain': get_current_site(request).domain,
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -47,7 +47,7 @@ def activateEmail(request, user, to_email):
 
 
 class ActivateView(TemplateView):
-    template_name = "activado.html"
+    template_name = "activation_subs/activado.html"
 
 
 class ConfirmationView(View):
@@ -88,9 +88,8 @@ class SubcriptioView(CreateView):
             return redirect('suscripcion') # LO REDIRECIONAMOS NUEVAMENTE A LA PAGINA
         else:
             user = form.save()
-            user.activo=False
+            # user.activo=False
             print('EMAIL: ',form.cleaned_data.get('email'))
-            print()
             print('ID: ',user.id)
             print('DOMINIO: ',get_current_site(self.request).domain)
             print('UID-PK: ',urlsafe_base64_encode(force_bytes(user.pk)))

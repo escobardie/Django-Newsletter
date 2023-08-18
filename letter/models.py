@@ -6,8 +6,8 @@ from ckeditor.fields import RichTextField
 
 class Subscribers(models.Model):
     email = models.EmailField(null=True)
-    activo = models.BooleanField(default=True, verbose_name='Activo')
-    last_login = models.DateTimeField(auto_now_add=True)
+    activo = models.BooleanField(default=False, verbose_name='Activo')
+    # last_login = models.DateTimeField(auto_now_add=True)
     date = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de suscripción')
     
 
