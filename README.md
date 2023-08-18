@@ -28,6 +28,12 @@ Instalar los requisitos:
     ```sh
     (venv)$ pip install -r requirements.txt
     ```
+1. Create Database:
+Crear Base de Datos:
+
+    ```sh
+    crear archivo .env, teniendo de ejemplo .env.example
+    ```
 
 1. Create the migrations:
 Crear las migraciones:
@@ -61,7 +67,10 @@ Se utilizo informacionde las siguientes paginas
 
 | BIBLIOTECA | LINK |
 | ------ | ------ |
+| Build a Newsletter | https://youtu.be/hWtlskOaFNI |
 | TIME DATE | https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date |
 | README | https://dillinger.io/ |
 | Authentication | https://youtu.be/wB1qOExDsYY |
+| crispy forms | https://stackoverflow.com/questions/65238459/templatedoesnotexist-at-users-register-bootstrap5-uni-form-html |
+
 
